@@ -23,13 +23,20 @@ function read($url, $data = null) {
 function dispatch() {
     $id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : null;
     if ($id == null) {
+        logging::e("Dispatcher", "No id");
         die("Invalid Parameter.");
     }
     $callback = get_server_callback($id);
     if ($callback == null) {
+        logging::e("Dispatcher", "No Callback for ID: $id.");
         die("No Callback.");
     }
 
+    $code = isset($_REQUEST["code"]) ? $_REQUEST["code"] : null;
+    if ($code == null) {
+        logging::e("Dispatcher", "No Code.");
+        die("No Code.");
+    }
     $result = array("openid" => null);
 
     $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . WECHAT_H5_APPID . "&secret=" . WECHAT_H5_APPSECRET . "&code=$code&grant_type=authorization_code";

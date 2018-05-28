@@ -9,14 +9,17 @@ if ($id == null) {
 }
 $userinfo = (int)$userinfo;
 
+
+$sec = basename(dirname(__FILE__));
+
 $domain = $_SERVER["HTTP_HOST"];
-$redirectUri = "http://$domain/dispatcher.php?id=$id";
+$redirectUri = "http://$domain/$sec/dispatcher.php?id=$id";
 $redirectUri = urlencode($redirectUri);
 
 
 $snsapi = ($userinfo != 0) ? "snsapi_userinfo" : "snsapi_base";
 $checkUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . WECHAT_H5_APPID . "&redirect_uri={$redirectUri}&response_type=code&scope={$snsapi}&state=1#wechat_redirect";
-logging::d('WeChat', "doOAuth, checkurl is: $checkUrl");
+logging::d('Index', "doOAuth, checkurl is: $checkUrl");
 header('location:' . $checkUrl);
 
 
