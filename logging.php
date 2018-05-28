@@ -1,6 +1,6 @@
 <?php
 
-defined('LOG_DIR') or define('LOG_DIR', dirname(__FILE__) . '/ogs/');
+defined('LOG_DIR') or define('LOG_DIR', dirname(__FILE__) . '/logs/');
 defined('LOG_FILE_PREFIX') or define('LOG_FILE_PREFIX', "logging-");
 
 class logging {

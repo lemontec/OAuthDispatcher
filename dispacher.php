@@ -25,7 +25,7 @@ function dispatch() {
     if ($id == null) {
         die("Invalid Parameter.");
     }
-    $callback = get_server_callback$($id);
+    $callback = get_server_callback($id);
     if ($callback == null) {
         die("No Callback.");
     }
