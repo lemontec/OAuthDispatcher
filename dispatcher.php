@@ -21,7 +21,7 @@ function read($url, $data = null) {
 
 
 function dispatch() {
-    $id = isset($_SESSION["id"]) ? $_SESSION["id"] : null;
+    $id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : null;
     if ($id == null) {
         die("Invalid Parameter.");
     }
@@ -37,7 +37,7 @@ function dispatch() {
     $json = json_decode($result, true);
 
     if (!isset($json["openid"])) {
-        logging::e('WeChat', $json['errcode'] . '            msg: ' . $json['errmsg']);
+        logging::e('Dispatch', $json['errcode'] . '            msg: ' . $json['errmsg']);
     } else {
         $openid = $json["openid"];
         $result["openid"] = $openid;
@@ -59,7 +59,13 @@ function dispatch() {
     }
     $plain = json_encode($result);
     $plain = urlencode($plain);
-    $url = $callback . "&result=" . $plain;
+
+    $delemiter = "&";
+    if (strchr($callback, "?") == null) {
+        $delemiter = '?';
+    }
+    $url = $callback . $delemiter . "userinfo=" . $plain;
+    logging::d("Dispatch", "direct url: $url");
     header("Location: $url");
 }
 
