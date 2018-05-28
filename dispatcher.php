@@ -37,41 +37,31 @@ function dispatch() {
         logging::e("Dispatcher", "No Code.");
         die("No Code.");
     }
-    $result = array("openid" => null);
+
+    $userinfo = "";
 
     $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . WECHAT_H5_APPID . "&secret=" . WECHAT_H5_APPSECRET . "&code=$code&grant_type=authorization_code";
-    $result = read($url);
-    $json = json_decode($result, true);
+    $tmp = read($url);
+    logging::d("Dispatcher", "userinfo 1 return: $tmp");
+    $json = json_decode($tmp, true);
 
-    if (!isset($json["openid"])) {
-        logging::e('Dispatch', $json['errcode'] . '            msg: ' . $json['errmsg']);
-    } else {
+    if (isset($json['scope']) && $json['scope'] == "snsapi_userinfo") {
+        logging::d("Dispatcher", "refresh userinfo");
+        $access_token = $json["access_token"];
         $openid = $json["openid"];
-        $result["openid"] = $openid;
-
-        if (isset($json['scope']) && $json['scope'] == "snsapi_userinfo") {
-            $access_token = $json["access_token"];
-            $url = "https://api.weixin.qq.com/sns/userinfo?access_token=$access_token&openid=$openid";
-            $plain = read($url);
-            $json = json_decode($plain, true);
-            $openid = $json["openid"];
-            $result["nickname"] = $json["nickname"];
-            $result["sex"] = $json["sex"];
-            $result["language"] = $json["language"];
-            $result["city"] = $json["city"];
-            $result["province"] = $json["province"];
-            $result["country"] = $json["country"];
-            $result["headimgurl"] = $json["headimgurl"];
-        }
+        $url = "https://api.weixin.qq.com/sns/userinfo?access_token=$access_token&openid=$openid";
+        $result = read($url);
+        logging::d("Disptcher", "userinfo 2 return: $result");
+        $userinfo = $result;
+    } else {
+        $userinfo = $tmp;
     }
-    $plain = json_encode($result);
-    $plain = urlencode($plain);
 
     $delemiter = "&";
     if (strchr($callback, "?") == null) {
         $delemiter = '?';
     }
-    $url = $callback . $delemiter . "userinfo=" . $plain;
+    $url = $callback . $delemiter . "userinfo=" . $userinfo;
     logging::d("Dispatch", "direct url: $url");
     header("Location: $url");
 }
