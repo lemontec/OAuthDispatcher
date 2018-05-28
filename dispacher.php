@@ -32,7 +32,7 @@ function dispatch() {
 
     $result = array("openid" => null);
 
-    $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $this->appid . "&secret=" . $this->secret . "&code=$code&grant_type=authorization_code";
+    $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . WECHAT_H5_APPID . "&secret=" . WECHAT_H5_APPSECRET . "&code=$code&grant_type=authorization_code";
     $result = read($url);
     $json = json_decode($result, true);
 
