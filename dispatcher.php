@@ -61,7 +61,14 @@ function dispatch() {
     if (strchr($callback, "?") == null) {
         $delemiter = '?';
     }
-    $url = $callback . $delemiter . "userinfo=" . $userinfo;
+
+    $fn = md5($userinfo);
+    logging::d("Dispatcher", "fn = $fn");
+    $cachefile = dirname(__FILE__) . "/cache/$fn.userinfo";
+    file_put_contents($cachefile, $userinfo);
+    $url = $callback . $delemiter . "fn=" . $fn;
+
+    // $url = $callback . $delemiter . "userinfo=" . $userinfo;
     logging::d("Dispatch", "direct url: $url");
     header("Location: $url");
 }
